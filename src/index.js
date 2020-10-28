@@ -1,3 +1,4 @@
+// DOM selector 
 const cardsContainer = document.getElementById('cards-container');
 const prevBtn = document.getElementById('prev');
 const nextBtn = document.getElementById('next');
@@ -11,13 +12,13 @@ const clearBtn = document.getElementById('clear');
 const addContainer = document.getElementById('add-container');
 
 // Keep track of current card
-let currentActiveCard = 0;
+let currentActiveCard = 0; // Which Card to show
 
 // Store DOM cards
-const cardsEl = [];
+const cardsEl = []; //Store DOM cards which array of elements 
 
 // Store card data
-const cardsData = getCardsData();
+const cardsData = getCardsData(); // fetch the data and store it in the local storage.
 
 // const cardsData = [
 //   {
@@ -36,11 +37,11 @@ const cardsData = getCardsData();
 
 // Create all cards
 function createCards() {
-  cardsData.forEach((data, index) => createCard(data, index));
+  cardsData.forEach((data, index) => createCard(data, index)); // loop through the data and creat cards
 }
 
 // Create a single card in DOM
-function createCard(data, index) {
+function createCard(data, index) { // Each Card will contain a question and answer
   const card = document.createElement('div');
   card.classList.add('card');
 
@@ -68,26 +69,28 @@ function createCard(data, index) {
   // Add to DOM cards
   cardsEl.push(card);
 
-  cardsContainer.appendChild(card);
+  cardsContainer.appendChild(card); // Put in the container
 
   updateCurrentText();
 }
 
 // Show number of cards
 function updateCurrentText() {
-  currentEl.innerText = `${currentActiveCard + 1}/${cardsEl.length}`;
+  currentEl.innerText = `${currentActiveCard + 1}/${cardsEl.length}`; // Add 1 to it because it's 0 by default 
 }
 
 // Get cards from local storage
-function getCardsData() {
-  const cards = JSON.parse(localStorage.getItem('cards'));
-  return cards === null ? [] : cards;
+function getCardsData() { 
+  // local storage only store string so we will take the array fetch back as an array by using parse
+  const cards = JSON.parse(localStorage.getItem('cards')); 
+  return cards === null ? [] : cards; //  if the cards are null return an empty array 
 }
 
 // Add card to local storage
 function setCardsData(cards) {
-  localStorage.setItem('cards', JSON.stringify(cards));
-  window.location.reload();
+  // Adding a card to the array and overwrite the array in storage
+  localStorage.setItem('cards', JSON.stringify(cards)); // We want to turn it to a sting
+  window.location.reload(); // To reflect on the DOM
 }
 
 createCards();
@@ -98,60 +101,62 @@ createCards();
 nextBtn.addEventListener('click', () => {
   cardsEl[currentActiveCard].className = 'card left';
 
-  currentActiveCard = currentActiveCard + 1;
+  currentActiveCard = currentActiveCard + 1; // If we are at 1 it will 2 and so on
 
-  if (currentActiveCard > cardsEl.length - 1) {
-    currentActiveCard = cardsEl.length - 1;
+  // We need to set the index on the last card.
+  if (currentActiveCard > cardsEl.length - 1) {  // -1 is because the array base is 0 
+    currentActiveCard = cardsEl.length - 1; // Set current active card to last place
   }
 
-  cardsEl[currentActiveCard].className = 'card active';
+  cardsEl[currentActiveCard].className = 'card active'; // Set the next card active by overwriting class name and gives the effect in CSS
 
-  updateCurrentText();
+  updateCurrentText(); // To update the card numbers
 });
 
 // Prev button
 prevBtn.addEventListener('click', () => {
   cardsEl[currentActiveCard].className = 'card right';
 
-  currentActiveCard = currentActiveCard - 1;
+  currentActiveCard = currentActiveCard - 1; // -1 for going back 
 
-  if (currentActiveCard < 0) {
-    currentActiveCard = 0;
+  if (currentActiveCard < 0) { // To prevent going pass 0 
+    currentActiveCard = 0; // Set the current to 0 
   }
 
-  cardsEl[currentActiveCard].className = 'card active';
+  cardsEl[currentActiveCard].className = 'card active'; // Set the next card active by overwriting class name and gives the effect in CSS
 
   updateCurrentText();
 });
 
 // Show add container
-showBtn.addEventListener('click', () => addContainer.classList.add('show'));
+showBtn.addEventListener('click', () => addContainer.classList.add('show')); // Add show class which will present our form card with CSS style
 // Hide add container
-hideBtn.addEventListener('click', () => addContainer.classList.remove('show'));
+hideBtn.addEventListener('click', () => addContainer.classList.remove('show')); // Add the hide container CSS style.
 
 // Add new card
 addQuestionBtn.addEventListener('click', () => {
-  const question = questionEl.value;
-  const answer = answerEl.value;
+  const question = questionEl.value; // Getting values from the form
+  const answer = answerEl.value; // Getting values from the form
+  console.log(question, answer)
 
   if (question.trim() && answer.trim()) {
-    const newCard = { question, answer };
+    const newCard = { question, answer }; // Create a new card object
 
     createCard(newCard);
 
-    questionEl.value = '';
-    answerEl.value = '';
+    questionEl.value = ''; // Clear the form inputs
+    answerEl.value = ''; // Clear the form inputs
 
-    addContainer.classList.remove('show');
+    addContainer.classList.remove('show'); // Hide class container
 
-    cardsData.push(newCard);
-    setCardsData(cardsData);
+    cardsData.push(newCard); // Add new card to the array
+    setCardsData(cardsData); // Passing to storage
   }
 });
 
 // Clear cards button
 clearBtn.addEventListener('click', () => {
-  localStorage.clear();
-  cardsContainer.innerHTML = '';
-  window.location.reload();
+  localStorage.clear(); // using clear method
+  cardsContainer.innerHTML = ''; // take the cards out of the DOM 
+  window.location.reload(); // Then reloading to update the page
 });
